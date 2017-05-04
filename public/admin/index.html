@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Afrique du Sud 2017 </title>
+    </head>
+    <body>
+        <h1>Administration - Afrique du Sud 2017</h1>
+        <div id="app">
+            <div id="stopovers">
+              <h2>Liste des étapes</h2>
+              <div v-for="stopover of stopovers">
+                  <p> {{ stopover.title }} </p>
+                  <p> {{ stopover.description }} </p>
+                  <button :data-index="stopover.id" @click="deleteStopover"> Supprimer </button>
+              </div>
+              <div>
+                <p> <strong> Ajouter une étape </strong> </p>
+                <span>Titre :</span>
+                <input type="text" id="title" name="title" v-model="newStopoverTitle"></input>
+                <br/>
+                <p>Description :</p>
+                <textarea type="text" id="description" name="description" v-model="newStopoverDescription"></textarea>
+              </div>
+              <button @click="createStopover">Ajouter</button>
+            </div>
+        </div>
+        <script src="https://unpkg.com/vue"></script>
+        <script src="https://unpkg.com/vue-resource"></script>
+        <script src="js/admin.js"></script>
+    </body>
+</html>
