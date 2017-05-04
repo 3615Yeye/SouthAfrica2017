@@ -1,0 +1,16 @@
+{
+  "name": "southafrica2017",
+  "version": "0.1.0",
+  "description": "Website to present a travel in South Africa on a map with a description and image gallery",
+  "main": "index.html",
+  "scripts": {
+    "postinstall": "node admin/init.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ronan Le Pivaingt",
+  "license": "ISC",
+  "dependencies": {
+    "forever": "^0.15.3",
+    "sqlite3": "^3.1.8"
+  }
+}
