@@ -1,3 +1,4 @@
+// Vue js instance
 var app = new Vue({
     el: '#app',
     data: {
@@ -30,6 +31,8 @@ var app = new Vue({
                     function (response) {
                         console.log("Fait");
                         this.stopovers = JSON.parse(response.bodyText)
+                        this.newStopoverTitle = ''
+                        this.newStopoverDescription = ''
                     }
                 );
         }
