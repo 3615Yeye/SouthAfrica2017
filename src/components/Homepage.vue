@@ -1,6 +1,7 @@
 <template>
   <div class="hello">
     <h1>Afrique du Sud 2017</h1>
+    <p> Hello pomme pidou </p>
   </div>
 </template>
 

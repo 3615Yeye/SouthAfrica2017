@@ -4,7 +4,7 @@
     <h3>Étapes</h3>
     <div v-for="stopover of stopovers">
       <p> {{ stopover.title }} </p>
-      <p> {{ stopover.description }} </p>
+      <p v-html="stopover.description"></p>
       <button :data-index="stopover.id" @click="deleteStopover"> Supprimer </button>
     </div>
     <div>
@@ -72,12 +72,10 @@
       // Getting the list of stopovers
       this.$http.get('stopover/list').then(response => {
         this.stopovers = response.body
-        console.log(response.body)
       })
     },
     methods: {
       createStopover: function () {
-        console.log(this.newStopoverTitle + ' ' + this.newStopoverDescription)
         this.$http.post(
           'admin/stopover/new',
           {title: this.newStopoverTitle, description: this.newStopoverDescription}
