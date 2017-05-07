@@ -1,16 +1,34 @@
 <template>
   <div class="hello">
-    <h1>Afrique du Sud 2017</h1>
-    <p> Hello pomme pidou </p>
+    <h2> Étape </h2>
+    <h3> {{ stopovers[index].title }} </h3>
+    <p v-html="stopovers[index].description"></p>
+    <button @click="previousStepover"> Précédent </button>
+    <button @click="nextStepover"> Suivant </button>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'hello',
+  name: 'homepage',
   data () {
     return {
-      msg: ''
+      stopovers: {},
+      index: 0
+    }
+  },
+  created: function () {
+    // Getting the list of stopovers
+    this.$http.get('stopover/list').then(response => {
+      this.stopovers = response.body
+    })
+  },
+  methods: {
+    nextStepover: function () {
+      this.index++
+    },
+    previousStepover: function () {
+      this.index--
     }
   }
 }

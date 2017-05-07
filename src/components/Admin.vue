@@ -54,7 +54,7 @@
   import Ckeditor from 'vue-ckeditor2'
 
   export default {
-    name: 'hello',
+    name: 'admin',
     data () {
       return {
         stopovers: {},
