@@ -49,3 +49,26 @@ exports.delete = function(req, res){
       })
     });
 };
+
+exports.update = function(req, res){
+  var id = req.body.id;
+  var title = req.body.title;
+  var description = req.body.description;
+
+  console.log(req.body);
+
+  knex('stopover')
+    .where('id', id)
+    .update({
+        title: title,
+        description: description
+    })
+    .then(function(rows) {
+      // Sending back the list of stopovers after inserting the new value
+      knex.select().table('stopover').then(function(rows) {
+        res.send(
+          JSON.stringify(rows)
+        );
+      })
+    });
+};

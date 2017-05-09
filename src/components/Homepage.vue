@@ -1,5 +1,5 @@
 <template>
-  <div class="hello">
+  <div id="homepage">
     <h2> Étape </h2>
     <h3> {{ stopovers[index].title }} </h3>
     <p v-html="stopovers[index].description"></p>
@@ -36,6 +36,10 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+#homepage {
+  margin-top: 60px;
+  margin: auto 30rem;
+}
 h1, h2 {
   font-weight: normal;
 }
