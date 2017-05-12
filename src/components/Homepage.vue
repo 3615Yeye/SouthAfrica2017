@@ -13,7 +13,7 @@ export default {
   name: 'homepage',
   data () {
     return {
-      stopovers: {},
+      stopovers: [],
       index: 0
     }
   },

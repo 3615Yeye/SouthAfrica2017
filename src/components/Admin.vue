@@ -3,13 +3,15 @@
     <h2> Admin </h2>
     <h3>Étapes</h3>
     <div class="leftColumn">
-      <div v-for="(stopover, indexB) of stopovers">
-        <p><b> {{ stopover.title }} </b></p>
-        <p v-html="stopover.description"></p>
-        <button :data-index="indexB" @click="editStopoverAction"> Éditer </button>
-        <button :data-id="stopover.id" @click="deleteStopoverAction"> Supprimer </button>
-      </div>
-    </div>
+      <draggable v-model="stopovers" :options="{group:'people'}" v-on:change="updateSorting" @start="drag=true" @end="drag=false">
+        <div v-for="(stopover, indexB) of stopovers">
+          <p><b> {{ stopover.sorting }} {{ stopover.title }} </b></p>
+          <p v-html="stopover.description"></p>
+          <button :data-index="indexB" @click="editStopoverAction"> Éditer </button>
+          <button :data-id="stopover.id" @click="deleteStopoverAction(indexB)"> Supprimer </button>
+        </div>
+      </draggable>
+  </div>
     <div class="rightColumn">
 
       <div id="createStepover">
@@ -70,12 +72,13 @@
 
 <script>
 import Ckeditor from 'vue-ckeditor2'
+import draggable from 'vuedraggable'
 
 export default {
   name: 'admin',
   data () {
     return {
-      stopovers: {},
+      stopovers: [],
       newStopover: {
         title: '',
         description: ''
@@ -93,12 +96,21 @@ export default {
           [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript' ]
         ],
         height: 300
+      },
+      options: {
+        dropzoneSelector: 'ul',
+        draggableSelector: 'li',
+        excludeOlderBrowsers: true,
+        multipleDropzonesItemsDraggingEnabled: false,
+        onDrop: function (event) { console.log(event) },
+        onDragstart: function (event) { console.log(event) }
       }
     }
   },
   created: function () {
     // Getting the list of stopovers
     this.$http.get('stopover/list').then(response => {
+      console.log(response.body)
       this.stopovers = response.body
     })
   },
@@ -125,13 +137,16 @@ export default {
       this.editStopover.title = this.stopovers[this.editIndex].title
       this.editStopover.description = this.stopovers[this.editIndex].description
     },
-    deleteStopoverAction: function (el) {
-      var id = el.target.attributes[1].value
-      console.log(el.target.attributes)
+    deleteStopoverAction: function (index) {
+      var id = this.stopovers[index].id
+      var sorting = this.stopovers[index].sorting
 
       this.$http.post(
         'admin/stopover/delete',
-        {id: id}
+        {
+          id: id,
+          sorting: sorting
+        }
       )
         .then(
           function (response) {
@@ -158,10 +173,27 @@ export default {
             this.editStopover.description = ''
           }
         )
+    },
+    updateSorting: function (data) {
+      console.log('Old index : ' + data.moved.oldIndex + ', new index : ' + data.moved.newIndex)
+      this.$http.post(
+        'admin/stopover/updateSorting',
+        {
+          newSorting: data.moved.newIndex,
+          oldSorting: data.moved.oldIndex
+        }
+      )
+        .then(
+          function (response) {
+            this.stopovers = response.body
+          }
+        )
     }
-
   },
-  components: { Ckeditor }
+  components: {
+    Ckeditor,
+    draggable
+  }
 }
   </script>
 
@@ -193,4 +225,4 @@ export default {
   a {
     color: #42b983;
   }
-  </style>
+</style>
