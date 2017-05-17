@@ -27,10 +27,9 @@
             <br/>
             <p>Description :</p>
             <ckeditor v-model="newStopover.description" :config="config"></ckeditor>
-            <p>Gallerie photos :</p>
-            <dropzone id="myVueDropzone" url="/admin/upload" maxFileSizeInMB="20" v-on:vdropzone-success="showSuccess">
-              <input type="hidden" name="token" value="xxx">
-            </dropzone>
+            <p>Position GPS (latitude, longitude) :</p>
+            <input type="text" name="startLat" v-model="newStopover.startLat"></input>
+            <input type="text" name="startLng" v-model="newStopover.startLng"></input>
             <b-button variant="primary" @click="createStopoverAction">Ajouter</b-button>
           </div>
           <div id="editStepover">
@@ -40,6 +39,9 @@
             <br/>
             <p>Description :</p>
             <ckeditor v-model="editStopover.description" :config="config"></ckeditor>
+            <p>Position GPS (latitude, longitude) :</p>
+            <input type="text" name="startLat" v-model="editStopover.startLat"></input>
+            <input type="text" name="startLng" v-model="editStopover.startLng"></input>
             <input type="hidden" id="id" name="id" v-model="editStopover.id"></input>
             <b-button @click="updateStopoverAction">Éditer</b-button>
           </div>
@@ -50,6 +52,7 @@
 </template>
 
 <script>
+import ckeditor from 'ckeditor/ckeditor.js'
 import Ckeditor from 'vue-ckeditor2'
 import draggable from 'vuedraggable'
 import Dropzone from 'vue2-dropzone'
@@ -62,12 +65,16 @@ export default {
       currentAction: true,
       newStopover: {
         title: '',
-        description: ''
+        description: '',
+        startLat: 0,
+        startLng: 0
       },
       editStopover: {
         id: -1,
         title: '',
-        description: ''
+        description: '',
+        startLat: 0,
+        startLng: 0
       },
       editIndex: -1,
       newStopoverTitle: '',
@@ -99,10 +106,7 @@ export default {
     createStopoverAction: function () {
       this.$http.post(
         'admin/stopover/new',
-        {
-          title: this.newStopover.title,
-          description: this.newStopover.description
-        }
+         this.newStopover
       )
         .then(
           function (response) {
@@ -112,11 +116,14 @@ export default {
         )
     },
     editStopoverAction: function (el) {
-      this.editIndex = el.target.attributes[1].value
+      this.editIndex = el.currentTarget.getAttribute('data-index')
+      console.log(this.editIndex)
 
       this.editStopover.id = this.stopovers[this.editIndex].id
       this.editStopover.title = this.stopovers[this.editIndex].title
       this.editStopover.description = this.stopovers[this.editIndex].description
+      this.editStopover.startLat = this.stopovers[this.editIndex].startLat
+      this.editStopover.startLng = this.stopovers[this.editIndex].startLng
     },
     deleteStopoverAction: function (index) {
       var id = this.stopovers[index].id
@@ -140,11 +147,7 @@ export default {
     updateStopoverAction: function () {
       this.$http.post(
         'admin/stopover/update',
-        {
-          id: this.editStopover.id,
-          title: this.editStopover.title,
-          description: this.editStopover.description
-        }
+        this.editStopover
       )
         .then(
           function (response) {

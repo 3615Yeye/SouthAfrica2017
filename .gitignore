@@ -1,9 +1,4 @@
 .DS_Store
 node_modules/
 dist/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-public/images/*
-server/db.sqlite
-.*.swp
+npm-debug.log

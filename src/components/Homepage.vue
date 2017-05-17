@@ -1,4 +1,5 @@
 <template>
+    <!--
   <div id="homepage">
     <div class="container">
       <div class="row">
@@ -21,19 +22,29 @@
       </div>
     </div>
   </div>
+    -->
+  <div>
+    <div id="top_div" style="height: 100%">
+      <h2>Test carte</h2>
+        Marker is placed at {{ currentStopover.startLat }}, {{ currentStopover.startLng }}
+      </br>
+      <div id="description" class="col-4">
+        <h2> Étape </h2>
+        <h3> {{ currentStopover.title }}</h3>
+        <p v-html="stopoverDescription"></p>
+        <button @click="previousStepover"> Précédent </button>
+        <button @click="nextStepover"> Suivant </button>
+      </div>
+      <v-map style="height: 90%" :zoom="zoom" :center="currentCenter">
+        <v-tilelayer :url="url" :attribution="attribution"></v-tilelayer>
+        <v-marker :lat-lng="[currentStopover.startLat, currentStopover.startLng]"></v-marker>
+      </v-map>
+    </div>
+  </div>
 </template>
 
 <script>
   import Vue2Leaflet from 'vue2-leaflet'
-  import 'leaflet/dist/leaflet.css'
-  import L from 'leaflet'
-  L.Icon.Default.imagePath = '.'
-  delete L.Icon.Default.prototype._getIconUrl
-  L.Icon.Default.mergeOptions({
-    iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-    iconUrl: require('leaflet/dist/images/marker-icon.png'),
-    shadowUrl: require('leaflet/dist/images/marker-shadow.png')
-  })
   export default {
     name: 'homepage',
     components: {
@@ -43,28 +54,39 @@
     },
     data () {
       return {
+        zoom:10,
+        center: L.latLng(-33.9188, 18.4233),
+        url:'https://api.mapbox.com/styles/v1/ronanlp/cj2ol4jdo00342smt0zcjn2ne/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1Ijoicm9uYW5scCIsImEiOiJjajJvbDFrMTYwMDRpMzNxb2N1YXZoZmZxIn0.2p4QVjbpSOP1GtgkTWpzLg',
+        attribution:'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
         stopovers: [],
         index: 0,
-        marker: L.latLng(47.413220, -1.219482),
         attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 
       }
     },
     computed: {
-      stopoverTitle: function () {
+      currentStopover: function () {
         if (this.stopovers.length > 0) {
-          return this.stopovers[this.index].title
+          return this.stopovers[this.index]
         }
         if (this.stopovers.length === 0) {
-          return ''
+          return {
+            title: '',
+            description: '',
+            startLat: 0,
+            startLng: 0
+          }
         }
       },
-      stopoverDescription: function () {
+      currentCenter: function () {
         if (this.stopovers.length > 0) {
-          return this.stopovers[this.index].description
+          return L.latLng(
+            this.stopovers[this.index].startLat,
+            this.stopovers[this.index].startLng
+          )
         }
         if (this.stopovers.length === 0) {
-          return ''
+          return L.latLng(-33.9188, 18.4233)
         }
       }
     },
@@ -72,6 +94,7 @@
       // Getting the list of stopovers
       this.$http.get('stopover/list').then(response => {
         this.stopovers = response.body
+        console.log(response.body)
       })
     },
     methods: {
@@ -87,6 +110,7 @@
 
   <!-- Add "scoped" attribute to limit CSS to this component only -->
   <style scoped>
+  /*
   .container {
     width: 100%;
   }
@@ -95,4 +119,5 @@
     width: 100%;
     padding: 0px;
   }
+  */
   </style>

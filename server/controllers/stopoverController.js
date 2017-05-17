@@ -36,8 +36,8 @@ exports.new = function(req, res){
         description: req.body.description,
         sorting: maxSorting,
         polyline: 'Hey',
-        startLat: 47.1234,
-        startLng: 7.1234,
+        startLat: req.body.startLat,
+        startLng: req.body.startLng,
         endLat: 48.1234,
         endLng: 8.1234,
 
@@ -79,15 +79,16 @@ exports.delete = function(req, res){
 };
 
 exports.update = function(req, res){
+  console.log(req.body);
   var id = req.body.id;
-  var title = req.body.title;
-  var description = req.body.description;
 
   knex('stopovers')
     .where('id', id)
     .update({
-        title: title,
-        description: description
+      title: req.body.title,
+      description: req.body.description,
+      startLat: req.body.startLat,
+      startLng: req.body.startLng
     })
     .then(function(rows) {
       // Sending back the list of stopovers after inserting the new value
