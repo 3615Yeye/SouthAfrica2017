@@ -1,0 +1,53 @@
+h1#titre {
+  text-align: center;
+  color: #1a4e6f;
+  font-size: 5rem;
+  font-family: 'Permanent Marker', cursive;
+}
+h2 {
+  font-family: 'Permanent Marker', cursive;
+}
+.navbar {
+  padding: 0;
+}
+div.imgfond {
+  background-image: url("/static/c2afa4f34ee91ae2dae7c9fc0313eeb7.jpg");
+  opacity: 0.4;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+.evidence {
+  font-size: 24px;
+  color: purple;
+}
+
+html, body, .container, .row {
+  height: 100%;
+}
+#carte {
+  padding: 0;
+}
+#mapid { 
+  height: 100%; 
+}
+
+.container {
+  width: 100%;
+}
+#description {
+  background-color: #F6F7FF;
+}
+#description p {
+  font-family: 'Indie Flower', cursive;
+  font-size: 1.2rem;
+}
+div.gallerie img {
+  width: 100px;
+  height: 100px;
+}
+div.controles {
+  width: 100%;
+  text-align: center;
+}

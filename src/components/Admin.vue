@@ -1,70 +1,49 @@
 <template>
   <div class="admin">
-    <h2> Admin </h2>
-    <h3>Étapes</h3>
-    <div class="leftColumn">
-      <draggable v-model="stopovers" :options="{group:'people'}" v-on:change="updateSorting" @start="drag=true" @end="drag=false">
-        <div v-for="(stopover, indexB) of stopovers">
-          <p><b> {{ stopover.sorting }} {{ stopover.title }} </b></p>
-          <p v-html="stopover.description"></p>
-          <button :data-index="indexB" @click="editStopoverAction"> Éditer </button>
-          <button :data-id="stopover.id" @click="deleteStopoverAction(indexB)"> Supprimer </button>
+    <div class="container">
+      <div class="row">
+        <div class="col-6">
+          <h2> Admin </h2>
+          <h3>Étapes</h3>
         </div>
-      </draggable>
-  </div>
-    <div class="rightColumn">
-
-      <div id="createStepover">
-        <p> <strong> Ajouter une étape </strong> </p>
-        <span>Titre :</span>
-        <input type="text" id="title" name="title" v-model="newStopover.title"></input>
-        <br/>
-        <p>Description :</p>
-        <ckeditor v-model="newStopover.description" :config="config"></ckeditor>
-        <!--
-          <p>Gallerie photos :</p>
-          <form id="upload-widget" method="post" action="admin/upload" class="dropzone">
-          <div class="dz-preview dz-file-preview">
-          <div class="dz-image">
-          <img data-dz-thumbnail />
-          </div>
-          <div class="dz-details">
-          <div class="dz-size">
-          <span data-dz-size></span>
-          </div>
-          <div class="dz-filename">
-          <span data-dz-name></span>
-          </div>
-          </div>
-          <div class="dz-progress">
-          <span class="dz-upload" data-dz-uploadprogress></span>
-          </div>
-          <div class="dz-error-message">
-          <span data-dz-errormessage></span>
-          </div>
-          <div class="dz-success-mark">
-          <svg>REMOVED FOR BREVITY</svg>
-          </div>
-          <div class="dz-error-mark">
-          <svg>REMOVED FOR BREVITY</svg>
-          </div>
-          </div>
-          <div class="fallback">
-          <input name="file" type="file" multiple />
-          </div>
-          </form>
-        -->
-        <button @click="createStopoverAction">Ajouter</button>
       </div>
-      <div id="editStepover">
-        <p> <strong> Éditer une étape </strong> </p>
-        <span>Titre :</span>
-        <input type="text" id="editTitle" name="title" v-model="editStopover.title"></input>
-        <br/>
-        <p>Description :</p>
-        <ckeditor v-model="editStopover.description" :config="config"></ckeditor>
-        <input type="hidden" id="id" name="id" v-model="editStopover.id"></input>
-        <button @click="updateStopoverAction">Éditer</button>
+      <div class="row">
+        <div class="col-6">
+          <draggable v-model="stopovers" :options="{group:'people'}" v-on:change="updateSorting" @start="drag=true" @end="drag=false">
+          <div v-for="(stopover, indexB) of stopovers">
+            <p><b> {{ stopover.sorting }} {{ stopover.title }} </b></p>
+            <p v-html="stopover.description"></p>
+            <b-button variant="secondary" :data-index="indexB" @click="editStopoverAction"> Éditer </b-button>
+            <b-button variant="danger" :data-id="stopover.id" @click="deleteStopoverAction(indexB)"> Supprimer </b-button>
+          </div>
+          </draggable>
+        </div>
+        <div class="col-6">
+
+          <div id="createStepover" v-show="currentAction">
+            <p> <strong> Ajouter une étape </strong> </p>
+            <span>Titre :</span>
+            <input type="text" id="title" name="title" v-model="newStopover.title"></input>
+            <br/>
+            <p>Description :</p>
+            <ckeditor v-model="newStopover.description" :config="config"></ckeditor>
+            <p>Gallerie photos :</p>
+            <dropzone id="myVueDropzone" url="/admin/upload" maxFileSizeInMB="20" v-on:vdropzone-success="showSuccess">
+              <input type="hidden" name="token" value="xxx">
+            </dropzone>
+            <b-button variant="primary" @click="createStopoverAction">Ajouter</b-button>
+          </div>
+          <div id="editStepover">
+            <p> <strong> Éditer une étape </strong> </p>
+            <span>Titre :</span>
+            <input type="text" id="editTitle" name="title" v-model="editStopover.title"></input>
+            <br/>
+            <p>Description :</p>
+            <ckeditor v-model="editStopover.description" :config="config"></ckeditor>
+            <input type="hidden" id="id" name="id" v-model="editStopover.id"></input>
+            <b-button @click="updateStopoverAction">Éditer</b-button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -73,12 +52,14 @@
 <script>
 import Ckeditor from 'vue-ckeditor2'
 import draggable from 'vuedraggable'
+import Dropzone from 'vue2-dropzone'
 
 export default {
   name: 'admin',
   data () {
     return {
       stopovers: [],
+      currentAction: true,
       newStopover: {
         title: '',
         description: ''
@@ -188,26 +169,22 @@ export default {
             this.stopovers = response.body
           }
         )
+    },
+    'showSuccess': function (file) {
+      console.log('A file was successfully uploaded')
+      console.log(file)
     }
   },
   components: {
     Ckeditor,
-    draggable
+    draggable,
+    Dropzone
   }
 }
   </script>
 
   <!-- Add "scoped" attribute to limit CSS to this component only -->
   <style scoped>
-  .leftColumn {
-    width: 45%;
-    display: inline-block;
-  }
-  .rightColumn {
-    width: 45%;
-    float: right;
-    display: inline-block;
-  }
   h1, h2 {
     font-weight: normal;
   }
