@@ -69,6 +69,19 @@ var readyPromise = new Promise(resolve => {
   _resolve = resolve
 })
 
+/* Added over the base template start */
+var bodyParser = require('body-parser');
+
+app.use( bodyParser.json() );       // to support JSON-encoded bodies
+app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+    extended: true
+})); 
+
+// send app to router
+require('../server/router')(app);
+
+/* Added over the base template end */
+
 console.log('> Starting dev server...')
 devMiddleware.waitUntilValid(() => {
   console.log('> Listening at ' + uri + '\n')

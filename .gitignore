@@ -1,5 +1,6 @@
-.DS_Store
 node_modules/
+server/db.sqlite
+.DS_Store
 dist/
 npm-debug.log
 .*.swp
