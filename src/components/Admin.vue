@@ -43,6 +43,21 @@
               <p>Position GPS (latitude, longitude) :</p>
               <input type="text" name="startLat" v-model="newStopover.startLat"></input>
               <input type="text" name="startLng" v-model="newStopover.startLng"></input>
+              <ul class="uploadGallery">
+                <draggable v-model="newStopover.gallery" :options="{group:'people'}" v-on:change="updateSorting" @start="drag=true" @end="drag=false">
+                  <li v-for="img in newStopover.gallery">
+                    <img :src="img.path" />
+                    <b-form-input v-model="img.text" type="text" placeholder="Légende"></b-form-input>
+                  </li>
+                </draggable>
+              </ul>
+              <dropzone 
+                id="dropzoneNew" 
+                url="/admin/upload/image" 
+                v-on:vdropzone-success="showSuccess"
+                acceptedFileTypes="image/*"
+                maxFileSizeInMB="20"
+                ></dropzone>
               <b-button variant="primary" @click="createStopoverAction">Ajouter</b-button>
             </div>
           </b-collapse>
@@ -74,6 +89,7 @@
 <script>
 import Ckeditor from 'vue-ckeditor2'
 import draggable from 'vuedraggable'
+import Dropzone from 'vue2-dropzone'
 
 export default {
   name: 'admin',
@@ -85,7 +101,8 @@ export default {
         title: '',
         description: '',
         startLat: 0,
-        startLng: 0
+        startLng: 0,
+        gallery: []
       },
       editStopover: {
         id: -1,
@@ -183,14 +200,20 @@ export default {
           }
         )
     },
-    'showSuccess': function (file) {
+    'showSuccess': function (file, rawResponse) {
       console.log('A file was successfully uploaded')
-      console.log(file)
+      console.log(rawResponse)
+      this.newStopover.gallery.push(
+        {
+          'path': '/' + rawResponse.path
+        }
+      )
     }
   },
   components: {
     Ckeditor,
-    draggable
+    draggable,
+    Dropzone
   }
 }
   </script>
@@ -213,5 +236,9 @@ export default {
 
   a {
     color: #42b983;
+  }
+  .uploadGallery img {
+      max-width: 200px;
+      max-height: 200px;
   }
 </style>

@@ -32,7 +32,7 @@ exports.new = function(req, res){
 
     // Fake data until everything is supported 
     knex('stopovers')
-      .returning(['id','title', 'description'])
+      .returning(['id'])
       .insert({
         title: req.body.title,
         description: req.body.description,
@@ -45,6 +45,9 @@ exports.new = function(req, res){
 
       })
       .then(function(rows) {
+        var id = rows[0];
+        console.log("Gallery for stopover id : " + id);
+        console.log(req.body);
         // Sending back the list of stopovers after inserting the new value
         knex('stopovers').then(function(rows) {
           res.send(
