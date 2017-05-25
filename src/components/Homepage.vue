@@ -10,6 +10,9 @@
       <h2> Étape </h2>
       <h3> {{ currentStopover.title }}</h3>
       <p v-html="currentStopover.description"></p>
+      <div v-for="(img, index) in currentStopover.gallery">
+        <img :src="img.path" />
+      </div>
       <b-button @click="previousStepover" variant="secondary"> Précédent </b-button>
       <b-button @click="nextStepover" variant="primary"> Suivant </b-button>
     </div>
@@ -64,8 +67,7 @@
     created: function () {
       // Getting the list of stopovers
       this.$http.get('stopover/list').then(response => {
-        this.stopovers = response.body
-        console.log(response.body)
+        this.stopovers = response.body.stopovers
       })
     },
     methods: {
@@ -90,5 +92,9 @@ div.container {
 #mapid { 
   height: 100%; 
   min-height: 300px;
+}
+#description img {
+  max-width: 200px;
+  max-height: 200px;
 }
 </style>

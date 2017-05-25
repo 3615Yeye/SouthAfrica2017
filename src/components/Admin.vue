@@ -45,9 +45,11 @@
               <input type="text" name="startLng" v-model="newStopover.startLng"></input>
               <ul class="uploadGallery">
                 <draggable v-model="newStopover.gallery" :options="{group:'people'}" v-on:change="updateSorting" @start="drag=true" @end="drag=false">
-                  <li v-for="img in newStopover.gallery">
+                  <li v-for="(img, index) in newStopover.gallery">
                     <img :src="img.path" />
-                    <b-form-input v-model="img.text" type="text" placeholder="Légende"></b-form-input>
+                    <b-form-input v-model="img.description" type="text" placeholder="Description"></b-form-input>
+                    <b-form-input v-model="img.credit" type="text" placeholder="Crédit"></b-form-input>
+                    <b-form-input v-model="img.sorting = index" type="text"></b-form-input>
                   </li>
                 </draggable>
               </ul>
@@ -125,8 +127,7 @@ export default {
   created: function () {
     // Getting the list of stopovers
     this.$http.get('/stopover/list').then(response => {
-      console.log(response.body)
-      this.stopovers = response.body
+      this.stopovers = response.body.stopovers
     })
   },
   methods: {

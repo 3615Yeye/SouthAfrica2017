@@ -15,5 +15,14 @@ db.serialize(function() {
         "endLat FLOAT, " +
         "endLng FLOAT " +
         ")");
+      db.run(
+        "CREATE TABLE IF NOT EXISTS galleries " +
+        "(id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+        "path STRING, " +
+        "description TEXT, " +
+        "credit TEXT, " +
+        "stopover_id INTEGER, " +
+        "sorting INTEGER " +
+        ")");
 });
 db.close();
