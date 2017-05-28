@@ -49,10 +49,18 @@
                     <img :src="img.path" />
                     <b-form-input v-model="img.description" type="text" placeholder="Description"></b-form-input>
                     <b-form-input v-model="img.credit" type="text" placeholder="Crédit"></b-form-input>
-                    <b-form-input v-model="img.sorting = index" type="text"></b-form-input>
+                    <b-form-input v-model="img.sorting = index" type="hidden"></b-form-input>
                   </li>
                 </draggable>
               </ul>
+              <vue-clip :options="uploadOptions" :on-complete="addedPhotoCreate">
+                <template slot="clip-uploader-action">
+                  <div>
+                    <div class="dz-message"><p>Cliquer ou déposer des photos ici</p></div>
+                  </div>
+                </template>
+              </vue-clip>
+              <!--
               <dropzone 
                 id="dropzoneNew" 
                 url="/admin/upload/image" 
@@ -60,6 +68,7 @@
                 acceptedFileTypes="image/*"
                 maxFileSizeInMB="20"
                 ></dropzone>
+              -->
               <b-button variant="primary" @click="createStopoverAction">Ajouter</b-button>
             </div>
           </b-collapse>
@@ -75,6 +84,23 @@
               <input type="text" name="startLat" v-model="editStopover.startLat"></input>
               <input type="text" name="startLng" v-model="editStopover.startLng"></input>
               <input type="hidden" id="id" name="id" v-model="editStopover.id"></input>
+              <ul class="uploadGallery">
+                <draggable v-model="editStopover.gallery" :options="{group:'people'}" v-on:change="updateSorting" @start="drag=true" @end="drag=false">
+                  <li v-for="(img, index) in editStopover.gallery">
+                    <img :src="img.path" />
+                    <b-form-input v-model="img.description" type="text" placeholder="Description"></b-form-input>
+                    <b-form-input v-model="img.credit" type="text" placeholder="Crédit"></b-form-input>
+                    <b-form-input v-model="img.sorting = index" type="hidden"></b-form-input>
+                  </li>
+                </draggable>
+              </ul>
+              <vue-clip :options="uploadOptions" :on-complete="addedPhotoUpdate">
+                <template slot="clip-uploader-action">
+                  <div>
+                    <div class="dz-message"><p>Cliquer ou déposer des photos ici</p></div>
+                  </div>
+                </template>
+              </vue-clip>
               <b-btn 
                 v-b-toggle.collapseAdminEdit 
                 variant="secondary" 
@@ -91,7 +117,6 @@
 <script>
 import Ckeditor from 'vue-ckeditor2'
 import draggable from 'vuedraggable'
-import Dropzone from 'vue2-dropzone'
 
 export default {
   name: 'admin',
@@ -111,7 +136,8 @@ export default {
         title: '',
         description: '',
         startLat: 0,
-        startLng: 0
+        startLng: 0,
+        gallery: []
       },
       editIndex: -1,
       newStopoverTitle: '',
@@ -121,6 +147,10 @@ export default {
           [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript' ]
         ],
         height: 300
+      },
+      uploadOptions: {
+        url: '/admin/upload/image',
+        paramName: 'file'
       }
     }
   },
@@ -152,6 +182,7 @@ export default {
       this.editStopover.description = this.stopovers[this.editIndex].description
       this.editStopover.startLat = this.stopovers[this.editIndex].startLat
       this.editStopover.startLng = this.stopovers[this.editIndex].startLng
+      this.editStopover.gallery = this.stopovers[this.editIndex].gallery
     },
     deleteStopoverAction: function (index) {
       var id = this.stopovers[index].id
@@ -201,20 +232,24 @@ export default {
           }
         )
     },
-    'showSuccess': function (file, rawResponse) {
-      console.log('A file was successfully uploaded')
-      console.log(rawResponse)
+    'addedPhotoCreate': function (file, status, xhr) {
       this.newStopover.gallery.push(
         {
-          'path': '/' + rawResponse.path
+          'path': '/' + JSON.parse(file.xhrResponse.response).path
+        }
+      )
+    },
+    'addedPhotoUpdate': function (file, status, xhr) {
+      this.editStopover.gallery.push(
+        {
+          'path': '/' + JSON.parse(file.xhrResponse.response).path
         }
       )
     }
   },
   components: {
     Ckeditor,
-    draggable,
-    Dropzone
+    draggable
   }
 }
   </script>

@@ -4,7 +4,8 @@ var knex = require('knex')({
   client: 'sqlite3',
   connection: {
     filename: "server/db.sqlite"
-  }
+  },
+  useNullAsDefault: true
 });
 var bodyParser = require('body-parser');
 
@@ -80,8 +81,6 @@ exports.new = function(req, res){
           galleries[i]['stopover_id '] = stopoverId;
         }
 
-        console.log(galleries);
-
         knex.insert(galleries)
         .into('galleries')
         .then(function(rows) {
@@ -133,12 +132,32 @@ exports.update = function(req, res){
       startLng: req.body.startLng
     })
     .then(function(rows) {
-      // Sending back the list of stopovers after inserting the new value
-      knex('stopovers').orderBy('sorting', 'asc').then(function(rows) {
-        res.send(
-          JSON.stringify(rows)
-        );
-      })
+      // Deleting the stopover by id
+      knex('galleries')
+        .where('stopover_id', id)
+        .del()
+        .then(function(rows) {
+          // Sending back the list of stopovers after inserting the new value
+          knex('stopovers').orderBy('sorting', 'asc').then(function(rows) {
+            var galleries = req.body.gallery;
+            for (i = 0; i < galleries.length; i++) {
+              galleries[i]['stopover_id'] = id;
+            }
+
+            console.log(galleries);
+
+            knex.insert(galleries)
+              .into('galleries')
+              .then(function(rows) {
+                // Sending back the list of stopovers after inserting the new value
+                knex('stopovers').then(function(rows) {
+                  res.send(
+                    JSON.stringify(rows)
+                  );
+                })
+              });
+          })
+        });
     });
 };
 
