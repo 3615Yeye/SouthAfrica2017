@@ -33,80 +33,18 @@
           </p>
 
           <b-collapse id="collapseAdminCreate">
-            <div id="createStepover" v-show="currentAction">
-              <p> <strong> Ajouter une étape </strong> </p>
-              <span>Titre :</span>
-              <input type="text" id="title" name="title" v-model="newStopover.title"></input>
-              <br/>
-              <p>Description :</p>
-              <ckeditor v-model="newStopover.description" :config="config"></ckeditor>
-              <p>Position GPS (latitude, longitude) :</p>
-              <input type="text" name="startLat" v-model="newStopover.startLat"></input>
-              <input type="text" name="startLng" v-model="newStopover.startLng"></input>
-              <ul class="uploadGallery">
-                <draggable v-model="newStopover.gallery" :options="{group:'people'}" v-on:change="updateSorting" @start="drag=true" @end="drag=false">
-                  <li v-for="(img, index) in newStopover.gallery">
-                    <img :src="img.path" />
-                    <b-form-input v-model="img.description" type="text" placeholder="Description"></b-form-input>
-                    <b-form-input v-model="img.credit" type="text" placeholder="Crédit"></b-form-input>
-                    <b-form-input v-model="img.sorting = index" type="hidden"></b-form-input>
-                  </li>
-                </draggable>
-              </ul>
-              <vue-clip :options="uploadOptions" :on-complete="addedPhotoCreate">
-                <template slot="clip-uploader-action">
-                  <div>
-                    <div class="dz-message"><p>Cliquer ou déposer des photos ici</p></div>
-                  </div>
-                </template>
-              </vue-clip>
-              <!--
-              <dropzone 
-                id="dropzoneNew" 
-                url="/admin/upload/image" 
-                v-on:vdropzone-success="showSuccess"
-                acceptedFileTypes="image/*"
-                maxFileSizeInMB="20"
-                ></dropzone>
-              -->
-              <b-button variant="primary" @click="createStopoverAction">Ajouter</b-button>
-            </div>
+            <new-stopover 
+              :newStopover="newStopover"
+              :ckeditorConfig="ckeditorConfig"
+              :uploadOptions="uploadOptions"
+              ></new-stopover>
           </b-collapse>
           <b-collapse id="collapseAdminEdit">
-            <div id="editStepover">
-              <p> <strong> Éditer une étape </strong> </p>
-              <span>Titre :</span>
-              <input type="text" id="editTitle" name="title" v-model="editStopover.title"></input>
-              <br/>
-              <p>Description :</p>
-              <ckeditor v-model="editStopover.description" :config="config"></ckeditor>
-              <p>Position GPS (latitude, longitude) :</p>
-              <input type="text" name="startLat" v-model="editStopover.startLat"></input>
-              <input type="text" name="startLng" v-model="editStopover.startLng"></input>
-              <input type="hidden" id="id" name="id" v-model="editStopover.id"></input>
-              <ul class="uploadGallery">
-                <draggable v-model="editStopover.gallery" :options="{group:'people'}" v-on:change="updateSorting" @start="drag=true" @end="drag=false">
-                  <li v-for="(img, index) in editStopover.gallery">
-                    <img :src="img.path" />
-                    <b-form-input v-model="img.description" type="text" placeholder="Description"></b-form-input>
-                    <b-form-input v-model="img.credit" type="text" placeholder="Crédit"></b-form-input>
-                    <b-form-input v-model="img.sorting = index" type="hidden"></b-form-input>
-                  </li>
-                </draggable>
-              </ul>
-              <vue-clip :options="uploadOptions" :on-complete="addedPhotoUpdate">
-                <template slot="clip-uploader-action">
-                  <div>
-                    <div class="dz-message"><p>Cliquer ou déposer des photos ici</p></div>
-                  </div>
-                </template>
-              </vue-clip>
-              <b-btn 
-                v-b-toggle.collapseAdminEdit 
-                variant="secondary" 
-                @click="updateStopoverAction"
-                >Éditer</b-btn>
-              </div>
+            <edit-stopover 
+              :editStopover="editStopover"
+              :ckeditorConfig="ckeditorConfig"
+              :uploadOptions="uploadOptions"
+              ></edit-stopover>
           </b-collapse>
         </div>
       </div>
@@ -117,6 +55,8 @@
 <script>
 import Ckeditor from 'vue-ckeditor2'
 import draggable from 'vuedraggable'
+import newStopover from './admin/NewStopover'
+import editStopover from './admin/EditStopover'
 
 export default {
   name: 'admin',
@@ -142,7 +82,7 @@ export default {
       editIndex: -1,
       newStopoverTitle: '',
       newStopoverDescription: '',
-      config: {
+      ckeditorConfig: {
         toolbar: [
           [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript' ]
         ],
@@ -161,18 +101,6 @@ export default {
     })
   },
   methods: {
-    createStopoverAction: function () {
-      this.$http.post(
-        'admin/stopover/new',
-         this.newStopover
-      )
-        .then(
-          function (response) {
-            this.stopovers = response.body
-            this.newStopover.title = ''
-          }
-        )
-    },
     editStopoverAction: function (el) {
       this.editIndex = el.currentTarget.getAttribute('data-index')
       console.log(this.editIndex)
@@ -201,22 +129,6 @@ export default {
           }
         )
     },
-    updateStopoverAction: function () {
-      this.$http.post(
-        '/admin/stopover/update',
-        this.editStopover
-      )
-        .then(
-          function (response) {
-            console.log(response)
-            this.stopovers = response.body
-            this.editStopover.id = -1
-            this.editStopover.title = ''
-            this.editStopover.description = ''
-            console.log(response)
-          }
-        )
-    },
     updateSorting: function (data) {
       console.log('Old index : ' + data.moved.oldIndex + ', new index : ' + data.moved.newIndex)
       this.$http.post(
@@ -231,25 +143,13 @@ export default {
             this.stopovers = response.body
           }
         )
-    },
-    'addedPhotoCreate': function (file, status, xhr) {
-      this.newStopover.gallery.push(
-        {
-          'path': '/' + JSON.parse(file.xhrResponse.response).path
-        }
-      )
-    },
-    'addedPhotoUpdate': function (file, status, xhr) {
-      this.editStopover.gallery.push(
-        {
-          'path': '/' + JSON.parse(file.xhrResponse.response).path
-        }
-      )
     }
   },
   components: {
     Ckeditor,
-    draggable
+    draggable,
+    newStopover,
+    editStopover
   }
 }
   </script>
@@ -272,9 +172,5 @@ export default {
 
   a {
     color: #42b983;
-  }
-  .uploadGallery img {
-      max-width: 200px;
-      max-height: 200px;
   }
 </style>
