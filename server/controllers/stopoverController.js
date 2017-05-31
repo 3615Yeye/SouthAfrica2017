@@ -12,6 +12,41 @@ var bodyParser = require('body-parser');
 // Registering session as authentified
 exports.list = function(req, res){
   knex('stopovers').orderBy('sorting', 'asc').then(function(stopoversResult) {
+    knex.select('galleries.*', 'galleries.path as imageUrl', 'galleries.description as caption')
+      .from('stopovers')
+      .leftJoin('galleries', 'stopovers.id', 'galleries.stopover_id')
+      .orderBy('galleries.stopover_id')
+      .orderBy('galleries.sorting')
+      .then(function(rows) {
+        // Transformation because stopoversResult from Knex can't be modified
+        var stopovers = (JSON.parse(JSON.stringify(stopoversResult)));
+
+        for (j = 0; j < rows.length; j++) {
+          var currentId = rows[j].stopover_id;
+          for (o = 0; o < stopovers.length; o++) {
+            if (stopovers[o]['id'] === currentId) {
+              if (!stopovers[o].hasOwnProperty('gallery'))
+                stopovers[o]['gallery'] = [];
+              
+              stopovers[o]['gallery'].push(rows[j]);
+              break;
+            }
+          }
+        }
+
+        res.send(
+          JSON.stringify(
+            {
+              stopovers: stopovers,
+            }
+          )
+        );
+      });
+  });
+};
+
+exports.adminList = function(req, res){
+  knex('stopovers').orderBy('sorting', 'asc').then(function(stopoversResult) {
     knex.select('galleries.*')
       .from('stopovers')
       .leftJoin('galleries', 'stopovers.id', 'galleries.stopover_id')

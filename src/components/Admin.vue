@@ -96,7 +96,7 @@ export default {
   },
   created: function () {
     // Getting the list of stopovers
-    this.$http.get('/stopover/list').then(response => {
+    this.$http.get('/admin/stopover/list').then(response => {
       this.stopovers = response.body.stopovers
     })
   },

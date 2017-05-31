@@ -20,7 +20,6 @@ db.serialize(function() {
         "(id INTEGER PRIMARY KEY AUTOINCREMENT, " +
         "path STRING, " +
         "description TEXT, " +
-        "credit TEXT, " +
         "stopover_id INTEGER, " +
         "sorting INTEGER " +
         ")");

@@ -14,7 +14,6 @@
       <li v-for="(img, index) in newStopover.gallery">
         <img :src="img.path" />
         <b-form-input v-model="img.description" type="text" placeholder="Description"></b-form-input>
-        <b-form-input v-model="img.credit" type="text" placeholder="Crédit"></b-form-input>
         <b-form-input v-model="img.sorting = index" type="hidden"></b-form-input>
       </li>
       </draggable>
