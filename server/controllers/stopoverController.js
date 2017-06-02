@@ -112,20 +112,23 @@ exports.new = function(req, res){
         console.log("Gallery for stopover id : " + stopoverId);
 
         var galleries = req.body.gallery;
-        for (i = 0; i < galleries.length; i++) {
-          galleries[i]['stopover_id '] = stopoverId;
-        }
+        if (galleries.length > 0) {
+          console.log("Photos !");
+          for (i = 0; i < galleries.length; i++) {
+            galleries[i]['stopover_id '] = stopoverId;
+          }
 
-        knex.insert(galleries)
-        .into('galleries')
-        .then(function(rows) {
+          knex.insert(galleries)
+          .into('galleries')
+          .then(function(rows) {
+            // Sending back the list of stopovers after inserting the new value
+            module.exports.adminList(req,res);
+          });
+        }
+        else {
           // Sending back the list of stopovers after inserting the new value
-          knex('stopovers').then(function(rows) {
-            res.send(
-              JSON.stringify(rows)
-            );
-          })
-        });
+          module.exports.adminList(req,res);
+        }
       });
   });
 
@@ -261,3 +264,6 @@ exports.updateSorting = function(req, res){
       });
   }
 };
+
+function returnStopoverList (res) {
+}

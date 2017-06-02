@@ -5,13 +5,13 @@
     <input type="text" id="editTitle" name="title" v-model="editStopover.title"></input>
     <br/>
     <p>Description :</p>
-    <ckeditor v-model="editStopover.description" :config="config"></ckeditor>
+    <ckeditor v-model="editStopover.description" :config="ckeditorConfig"></ckeditor>
     <p>Position GPS (latitude, longitude) :</p>
     <input type="text" name="startLat" v-model="editStopover.startLat"></input>
     <input type="text" name="startLng" v-model="editStopover.startLng"></input>
     <input type="hidden" id="id" name="id" v-model="editStopover.id"></input>
     <ul class="uploadGallery">
-      <draggable v-model="editStopover.gallery" :options="{group:'people'}" v-on:change="updateSorting" @start="drag=true" @end="drag=false">
+      <draggable v-model="editStopover.gallery" :options="{group:'people'}" @start="drag=true" @end="drag=false">
       <li v-for="(img, index) in editStopover.gallery">
         <img :src="img.path" />
         <b-form-input v-model="img.description" type="text" placeholder="Description"></b-form-input>
@@ -56,12 +56,10 @@ export default {
       )
         .then(
           function (response) {
-            console.log(response)
-            this.stopovers = response.body
+            this.$emit('update:stopoversList')
             this.editStopover.id = -1
             this.editStopover.title = ''
             this.editStopover.description = ''
-            console.log(response)
           }
         )
     },

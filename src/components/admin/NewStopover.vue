@@ -10,7 +10,7 @@
     <input type="text" name="startLat" v-model="newStopover.startLat"></input>
     <input type="text" name="startLng" v-model="newStopover.startLng"></input>
     <ul class="uploadGallery">
-      <draggable v-model="newStopover.gallery" :options="{group:'people'}" v-on:change="updateSorting" @start="drag=true" @end="drag=false">
+      <draggable v-model="newStopover.gallery" :options="{group:'people'}" @start="drag=true" @end="drag=false">
       <li v-for="(img, index) in newStopover.gallery">
         <img :src="img.path" />
         <b-form-input v-model="img.description" type="text" placeholder="Description"></b-form-input>
@@ -39,6 +39,13 @@ export default {
     ckeditorConfig: {},
     uploadOptions: {}
   },
+  data: {
+    zoom: 12,
+    center: [-33.9188, 18.4233],
+    markerLat: -33.9188,
+    markerLng: 18.4233,
+    url: 'https://api.mapbox.com/styles/v1/ronanlp/cj2ol4jdo00342smt0zcjn2ne/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1Ijoicm9uYW5scCIsImEiOiJjajJvbDFrMTYwMDRpMzNxb2N1YXZoZmZxIn0.2p4QVjbpSOP1GtgkTWpzLg'
+  },
   components: {
     Ckeditor,
     draggable
@@ -51,7 +58,7 @@ export default {
       )
         .then(
           function (response) {
-            this.stopovers = response.body
+            this.$emit('update:stopoversList')
             this.newStopover.title = ''
           }
         )

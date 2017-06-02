@@ -11,6 +11,7 @@
       <h3> {{ currentStopover.title }}</h3>
       <p v-html="currentStopover.description"></p>
       <vue-images 
+        v-if="currentStopover.gallery.length"
         :imgs="currentStopover.gallery"
         :modalclose="galleryConfig.modalclose"
         :keyinput="galleryConfig.keyinput"
@@ -94,10 +95,14 @@
     },
     methods: {
       nextStepover: function () {
-        this.index++
+        if (this.index < this.stopovers.length - 1) {
+          this.index++
+        }
       },
       previousStepover: function () {
-        this.index--
+        if (this.index > 0) {
+          this.index--
+        }
       }
     }
   }

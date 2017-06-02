@@ -33,14 +33,16 @@
           </p>
 
           <b-collapse id="collapseAdminCreate">
-            <new-stopover 
-              :newStopover="newStopover"
-              :ckeditorConfig="ckeditorConfig"
-              :uploadOptions="uploadOptions"
-              ></new-stopover>
           </b-collapse>
+          <new-stopover 
+            @update:stopoversList="updateStopoversList"
+            :newStopover="newStopover"
+            :ckeditorConfig="ckeditorConfig"
+            :uploadOptions="uploadOptions"
+            ></new-stopover>
           <b-collapse id="collapseAdminEdit">
             <edit-stopover 
+              @update:stopoversList="updateStopoversList"
               :editStopover="editStopover"
               :ckeditorConfig="ckeditorConfig"
               :uploadOptions="uploadOptions"
@@ -101,6 +103,11 @@ export default {
     })
   },
   methods: {
+    updateStopoversList: function () {
+      this.$http.get('/admin/stopover/list').then(response => {
+        this.stopovers = response.body.stopovers
+      })
+    },
     editStopoverAction: function (el) {
       this.editIndex = el.currentTarget.getAttribute('data-index')
       console.log(this.editIndex)
