@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <nav class="navbar navbar-light">
+    <nav id="navbar" class="navbar navbar-light">
       <div class="imgfond"></div>
       <h1 id="titre" class="navbar-brand mb-0">Afrique du Sud 2017</h1>
       <p>
@@ -16,7 +16,9 @@
         </b-button>
       </p>
     </nav>
-    <component :is="currentView"></component>
+    <div id="main">
+      <component :is="currentView"></component>
+    </div>
   </div>
 </template>
 
@@ -39,13 +41,22 @@ export default {
 </script>
 
 <style>
+html, body {
+  height: 100%;
+}
 #app {
+  height: 100%;
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+}
+#navbar {
+  height: 15%;
+}
+#main {
+  height: 85%;
 }
 @import "../node_modules/leaflet/dist/leaflet.css";
 </style>

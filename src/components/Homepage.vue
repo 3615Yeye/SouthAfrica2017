@@ -1,14 +1,13 @@
 <template>
   <div id="homepage" class="row">
     <div id="carte" class="col-8">
-      <v-map id="mapid" style="height: 90%" :zoom="zoom" :center="currentCenter">
+      <v-map id="mapid" :zoom="zoom" :center="currentCenter">
         <v-tilelayer :url="url" :attribution="attribution"></v-tilelayer>
         <v-marker :lat-lng="[currentStopover.startLat, currentStopover.startLng]"></v-marker>
       </v-map>
     </div>
     <div id="description" class="col-4">
-      <h2> Étape </h2>
-      <h3> {{ currentStopover.title }}</h3>
+      <h2> {{ currentStopover.title }}</h2>
       <p v-html="currentStopover.description"></p>
       <vue-images 
         v-if="currentStopover.gallery.length"
@@ -22,8 +21,10 @@
         :showimagecount="galleryConfig.showimagecount"
         >
       </vue-images>
-      <b-button @click="previousStepover" variant="secondary"> Précédent </b-button>
-      <b-button @click="nextStepover" variant="primary"> Suivant </b-button>
+      <div id="nav-buttons">
+        <b-button @click="previousStepover" variant="outline-secondary"> Précédent </b-button>
+        <b-button @click="nextStepover" variant="outline-primary"> Suivant </b-button>
+      </div>
     </div>
   </div>
 </template>
@@ -53,7 +54,7 @@
           mousescroll: true,
           showclosebutton: true,
           showcaption: true,
-          imagecountseparator: 'de',
+          imagecountseparator: 'sur',
           showimagecount: true,
           showthumbnails: true
         }
@@ -111,6 +112,10 @@
   <!-- Add "scoped" attribute to limit CSS to this component only -->
 @import 'vue-image-lightbox/dist/vue-image-lightbox.min.css'
 <style scoped>
+#homepage {
+  height: 100%;
+  margin: 0px;
+}
 div.container {
   width: 100%;
 }
@@ -121,8 +126,18 @@ div.container {
   height: 100%; 
   min-height: 300px;
 }
+#description {
+  text-align: left;
+}
 #description img {
   max-width: 200px;
   max-height: 200px;
+}
+#nav-buttons {
+  position: absolute;
+  bottom: 0px;
+  left: 50%;
+  transform: translate(-50%, 0);
+  margin-bottom: 2%;
 }
 </style>
