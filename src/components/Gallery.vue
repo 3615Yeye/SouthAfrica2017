@@ -2,12 +2,12 @@
   <div>
     <div class="my-gallery" itemscope itemtype="http://schema.org/ImageGallery">
       <figure 
-        v-for="image in images"
+        v-for="image in ratioImages"
         itemprop="associatedMedia" 
         itemscope 
         itemtype="http://schema.org/ImageObject">
         <a :href="image.path" itemprop="contentUrl" :data-size="image.width + 'x' + image.height">
-          <img :src="image.path + '?dim=200x200'" itemprop="thumbnail" alt="Image description" />
+          <img :src="image.thumbPath" itemprop="thumbnail" alt="Image description" />
         </a>
         <figcaption itemprop="caption description">{{image.caption}}</figcaption>
       </figure>
@@ -280,6 +280,11 @@
       openPhotoSwipe(hashData.pid, galleryElements[ hashData.gid - 1 ], true, true)
     }
   }
+  function calculateAspectRatioFit (srcWidth, srcHeight, maxWidth, maxHeight) {
+    var ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight)
+
+    return { width: srcWidth * ratio, height: srcHeight * ratio }
+  }
   export default {
     name: 'gallery',
     props: {
@@ -301,6 +306,26 @@
           showimagecount: true,
           showthumbnails: true
         }
+      }
+    },
+    computed: {
+      ratioImages () {
+        var ratioImages = []
+        for (var i = 0; i < this.images.length; i++) {
+          var ratioSize = calculateAspectRatioFit(
+            this.images[i].width,
+            this.images[i].height,
+            200,
+            200
+          )
+          var image = this.images[i]
+          image.thumbWidth = ratioSize.width
+          image.thumbHeight = ratioSize.height
+          image.thumbPath = image.path + '?dim=' + image.thumbWidth + 'x' + image.thumbHeight
+          ratioImages.push(image)
+        }
+        console.log(ratioImages)
+        return ratioImages
       }
     }
   }
