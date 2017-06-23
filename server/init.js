@@ -21,7 +21,9 @@ db.serialize(function() {
         "path STRING, " +
         "description TEXT, " +
         "stopover_id INTEGER, " +
-        "sorting INTEGER " +
+        "sorting INTEGER, " +
+        "width INTEGER, " +
+        "height INTEGER " +
         ")");
 });
 db.close();

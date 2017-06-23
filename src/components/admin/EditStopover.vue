@@ -64,9 +64,12 @@ export default {
         )
     },
     'addedPhotoUpdate': function (file, status, xhr) {
+      var response = JSON.parse(file.xhrResponse.response)
       this.editStopover.gallery.push(
         {
-          'path': '/' + JSON.parse(file.xhrResponse.response).path
+          'path': '/' + response.path,
+          'width': response.width,
+          'height': response.height
         }
       )
     }

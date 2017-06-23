@@ -39,13 +39,6 @@ export default {
     ckeditorConfig: {},
     uploadOptions: {}
   },
-  data: {
-    zoom: 12,
-    center: [-33.9188, 18.4233],
-    markerLat: -33.9188,
-    markerLng: 18.4233,
-    url: 'https://api.mapbox.com/styles/v1/ronanlp/cj2ol4jdo00342smt0zcjn2ne/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1Ijoicm9uYW5scCIsImEiOiJjajJvbDFrMTYwMDRpMzNxb2N1YXZoZmZxIn0.2p4QVjbpSOP1GtgkTWpzLg'
-  },
   components: {
     Ckeditor,
     draggable
@@ -60,13 +53,19 @@ export default {
           function (response) {
             this.$emit('update:stopoversList')
             this.newStopover.title = ''
+            this.newStopover.startLat = 0
+            this.newStopover.startLng = 0
+            this.newStopover.gallery = []
           }
         )
     },
     'addedPhotoCreate': function (file, status, xhr) {
+      var response = JSON.parse(file.xhrResponse.response)
       this.newStopover.gallery.push(
         {
-          'path': '/' + JSON.parse(file.xhrResponse.response).path
+          'path': '/' + response.path,
+          'width': response.width,
+          'height': response.height
         }
       )
     }

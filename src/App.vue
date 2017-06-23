@@ -3,7 +3,7 @@
     <nav id="navbar" class="navbar navbar-light">
       <div class="imgfond"></div>
       <h1 id="titre" class="navbar-brand mb-0">Afrique du Sud 2017</h1>
-      <p>
+      <p id="nav-buttons">
         <b-button @click="currentView='homepage'" 
           v-show="currentView=='admin'"
           variant="outline-success"
@@ -44,6 +44,16 @@ export default {
 html, body {
   height: 100%;
 }
+h1#titre {
+  font-family: 'Permanent Marker', cursive;
+  color: #1a4e6f;
+  font-size: 3rem;
+}
+#nav-buttons {
+    position: absolute;
+    right: 5%;
+    margin-bottom: 0px;
+}
 #app {
   height: 100%;
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
@@ -53,10 +63,10 @@ html, body {
   color: #2c3e50;
 }
 #navbar {
-  height: 15%;
+  height: 10%;
 }
 #main {
-  height: 85%;
+  height: 90%;
 }
 @import "../node_modules/leaflet/dist/leaflet.css";
 </style>

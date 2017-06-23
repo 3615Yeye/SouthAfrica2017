@@ -8,19 +8,12 @@
     </div>
     <div id="description" class="col-4">
       <h2> {{ currentStopover.title }}</h2>
-      <p v-html="currentStopover.description"></p>
-      <vue-images 
-        v-if="currentStopover.gallery.length"
-        :imgs="currentStopover.gallery"
-        :modalclose="galleryConfig.modalclose"
-        :keyinput="galleryConfig.keyinput"
-        :mousescroll="galleryConfig.mousescroll"
-        :showclosebutton="galleryConfig.showclosebutton"
-        :showcaption="galleryConfig.showcaption"
-        :imagecountseparator="galleryConfig.imagecountseparator"
-        :showimagecount="galleryConfig.showimagecount"
-        >
-      </vue-images>
+      <div id="content">
+          <p v-html="currentStopover.description"></p>
+          <gallery
+            :images="currentStopover.gallery"
+          ></gallery>
+      </div>
       <div id="nav-buttons">
         <b-button @click="previousStepover" variant="outline-secondary"> Précédent </b-button>
         <b-button @click="nextStepover" variant="outline-primary"> Suivant </b-button>
@@ -32,13 +25,15 @@
 <script>
   import Vue2Leaflet from 'vue2-leaflet'
   import vueImages from 'vue-images'
+  import Gallery from './Gallery'
   export default {
     name: 'homepage',
     components: {
       'v-map': Vue2Leaflet.Map,
       'v-tilelayer': Vue2Leaflet.TileLayer,
       'v-marker': Vue2Leaflet.Marker,
-      vueImages: vueImages
+      vueImages: vueImages,
+      gallery: Gallery
     },
     data () {
       return {
@@ -121,17 +116,20 @@ div.container {
 }
 #carte {
   padding: 0;
+  max-height: 100%;
 }
 #mapid { 
   height: 100%; 
   min-height: 300px;
 }
 #description {
+  font-family: 'Indie Flower', cursive;
   text-align: left;
+  max-height: 100%;
 }
-#description img {
-  max-width: 200px;
-  max-height: 200px;
+#content {
+    overflow: scroll;
+    max-height: 85%;
 }
 #nav-buttons {
   position: absolute;
