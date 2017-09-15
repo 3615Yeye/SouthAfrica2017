@@ -71,7 +71,8 @@ export default {
         description: '',
         startLat: 0,
         startLng: 0,
-        gallery: []
+        gallery: [],
+        polyline: ''
       },
       editStopover: {
         id: -1,
@@ -79,7 +80,8 @@ export default {
         description: '',
         startLat: 0,
         startLng: 0,
-        gallery: []
+        gallery: [],
+        polyline: ''
       },
       editIndex: -1,
       newStopoverTitle: '',

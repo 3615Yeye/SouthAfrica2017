@@ -9,6 +9,7 @@
     <p>Position GPS (latitude, longitude) :</p>
     <input type="text" name="startLat" v-model="editStopover.startLat"></input>
     <input type="text" name="startLng" v-model="editStopover.startLng"></input>
+    <input type="text" name="polyline" v-model="editStopover.polyline"></input>
     <input type="hidden" id="id" name="id" v-model="editStopover.id"></input>
     <ul class="uploadGallery">
       <draggable v-model="editStopover.gallery" :options="{group:'people'}" @start="drag=true" @end="drag=false">
@@ -60,6 +61,7 @@ export default {
             this.editStopover.id = -1
             this.editStopover.title = ''
             this.editStopover.description = ''
+            this.editStopover.polyline = ''
           }
         )
     },

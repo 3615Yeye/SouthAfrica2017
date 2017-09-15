@@ -4,6 +4,7 @@
       <v-map id="mapid" :zoom="zoom" :center="currentCenter">
         <v-tilelayer :url="url" :attribution="attribution"></v-tilelayer>
         <v-marker :lat-lng="[currentStopover.startLat, currentStopover.startLng]"></v-marker>
+         <v-poly :key="currentPolyline.id" :lat-lngs="currentPolyline.points" visible></v-poly>
       </v-map>
     </div>
     <div id="description" class="col-4">
@@ -11,6 +12,7 @@
       <div id="content">
           <p v-html="currentStopover.description"></p>
           <gallery
+             v-if="currentStopover.gallery"
             :images="currentStopover.gallery"
           ></gallery>
       </div>
@@ -26,12 +28,14 @@
   import Vue2Leaflet from 'vue2-leaflet'
   import vueImages from 'vue-images'
   import Gallery from './Gallery'
+  import Polyline from '@mapbox/polyline'
   export default {
     name: 'homepage',
     components: {
       'v-map': Vue2Leaflet.Map,
       'v-tilelayer': Vue2Leaflet.TileLayer,
       'v-marker': Vue2Leaflet.Marker,
+      'v-poly': Vue2Leaflet.Polyline,
       vueImages: vueImages,
       gallery: Gallery
     },
@@ -52,7 +56,18 @@
           imagecountseparator: 'sur',
           showimagecount: true,
           showthumbnails: true
-        }
+        },
+        polylines: [
+          {
+            id: '1',
+            points: [
+              {lat: 37.772, lng: -122.214},
+            {lat: 21.291, lng: -157.821},
+            {lat: -18.142, lng: -181.569},
+            {lat: -27.467, lng: -206.973}],
+            visible: true },
+          { id: '2', points: [[-73.91, 40.78], [-87.62, 41.83], [-96.72, 32.76]], visible: true }
+        ]
       }
     },
     computed: {
@@ -66,7 +81,8 @@
             description: '',
             startLat: 0,
             startLng: 0,
-            gallery: []
+            gallery: [],
+            polyline: ''
           }
         }
       },
@@ -79,6 +95,27 @@
         }
         if (this.stopovers.length === 0) {
           return [-33.9188, 18.4233]
+        }
+      },
+      currentPolyline: function () {
+        if (this.stopovers[this.index].polyline) {
+          var polyline = Polyline.decode(this.stopovers[this.index].polyline)
+          var formatedPolyline = {
+            id: '0',
+            points: []
+          }
+          for (var i = 0; i < polyline.length; i++) {
+            formatedPolyline.points.push(
+              {
+                lat: polyline[i][0],
+                lng: polyline[i][1]
+              }
+            )
+          }
+          return formatedPolyline
+        } else {
+          console.log('No polyline')
+          return false
         }
       }
     },
@@ -102,9 +139,9 @@
       }
     }
   }
-  </script>
+</script>
 
-  <!-- Add "scoped" attribute to limit CSS to this component only -->
+<!-- Add "scoped" attribute to limit CSS to this component only -->
 @import 'vue-image-lightbox/dist/vue-image-lightbox.min.css'
 <style scoped>
 #homepage {
@@ -128,8 +165,8 @@ div.container {
   max-height: 100%;
 }
 #content {
-    overflow: scroll;
-    max-height: 85%;
+  overflow: scroll;
+  max-height: 85%;
 }
 #nav-buttons {
   position: absolute;

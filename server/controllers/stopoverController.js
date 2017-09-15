@@ -167,7 +167,8 @@ exports.update = function(req, res){
       title: req.body.title,
       description: req.body.description,
       startLat: req.body.startLat,
-      startLng: req.body.startLng
+      startLng: req.body.startLng,
+      polyline: req.body.polyline
     })
     .then(function(rows) {
       // Deleting the stopover by id
