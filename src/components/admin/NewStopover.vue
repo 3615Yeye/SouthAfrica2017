@@ -1,11 +1,15 @@
 <template>
-  <div id="createStepover">
+  <div id="create-stopover">
     <p> <strong> Ajouter une étape </strong> </p>
     <span>Titre :</span>
     <input type="text" id="title" name="title" v-model="newStopover.title"></input>
     <br/>
     <p>Description :</p>
-    <ckeditor v-model="newStopover.description" :config="ckeditorConfig"></ckeditor>
+    <ckeditor
+        id="ckeditor-new"
+        v-model="newStopover.description"
+        :config="ckeditorConfig"
+        ></ckeditor>
     <p>Position GPS (latitude, longitude) :</p>
     <input type="text" name="startLat" v-model="newStopover.startLat"></input>
     <input type="text" name="startLng" v-model="newStopover.startLng"></input>
@@ -18,7 +22,7 @@
       </li>
       </draggable>
     </ul>
-    <vue-clip :options="uploadOptions" :on-complete="addedPhotoCreate">
+    <vue-clip class="gallery-upload" :options="uploadOptions" :on-complete="addedPhotoCreate">
       <template slot="clip-uploader-action">
         <div>
           <div class="dz-message"><p>Cliquer ou déposer des photos ici</p></div>

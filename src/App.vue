@@ -4,12 +4,12 @@
       <div class="imgfond"></div>
       <h1 id="titre" class="navbar-brand mb-0">Afrique du Sud 2017</h1>
       <p id="nav-buttons">
-        <b-button @click="currentView='homepage'" 
+        <b-button @click="currentView='homepage'"
           v-show="currentView=='admin'"
           variant="outline-success"
           > Accueil
         </b-button>
-        <b-button @click="currentView='admin'" 
+        <b-button @click="currentView='admin'"
           v-show="currentView=='homepage'"
           variant="outline-success"
           > Admin
@@ -48,6 +48,7 @@ h1#titre {
   font-family: 'Permanent Marker', cursive;
   color: #1a4e6f;
   font-size: 3rem;
+  text-align: center;
 }
 #nav-buttons {
     position: absolute;
@@ -59,7 +60,6 @@ h1#titre {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
 }
 #navbar {

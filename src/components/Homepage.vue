@@ -155,8 +155,8 @@ div.container {
   padding: 0;
   max-height: 100%;
 }
-#mapid { 
-  height: 100%; 
+#mapid {
+  height: 100%;
   min-height: 300px;
 }
 #description {
@@ -165,7 +165,7 @@ div.container {
   max-height: 100%;
 }
 #content {
-  overflow: scroll;
+  overflow-y: scroll;
   max-height: 85%;
 }
 #nav-buttons {

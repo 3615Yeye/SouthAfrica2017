@@ -8,45 +8,68 @@
         </div>
       </div>
       <div class="row">
-        <div class="col-6">
-          <draggable v-model="stopovers" :options="{group:'people'}" v-on:change="updateSorting" @start="drag=true" @end="drag=false">
-          <div v-for="(stopover, index) of stopovers">
-            <p><b> {{ stopover.sorting }} {{ stopover.title }} </b></p>
-            <p v-html="stopover.description"></p>
-            <b-btn 
-              v-b-toggle.collapseAdminEdit 
-              variant="secondary" 
-              :data-index="index" 
-              @click="editStopoverAction"
-              >Éditer</b-btn>
-            <b-button 
-              variant="danger" 
-              :data-id="stopover.id" 
-              @click="deleteStopoverAction(index)"
-              > Supprimer </b-button>
-          </div>
-          </draggable>
+        <div class="col-3 stopovers">
+          <b-card-group>
+            <draggable v-model="stopovers" :options="{group:'people'}" v-on:change="updateSorting" @start="drag=true" @end="drag=false">
+            <b-card
+                       :title="stopover.title"
+                       v-for="(stopover, index) of stopovers"
+                       class="stopover-item"
+                       >
+                       <p class="card-text" v-html="stopover.description"></p>
+                         <b-link
+                            variant="secondary"
+                            @click="editStopoverAction(index)"
+                            >
+                            <icon name="pencil"></icon>
+                            Éditer
+                         </b-link>
+                           <b-link
+                            variant="danger"
+                            :data-id="stopover.id"
+                            @click="deleteStopoverAction(index)"
+                            >
+                            <icon name="trash-o"></icon>
+                            Supprimer
+                           </b-link>
+            </b-card>
+            </draggable>
+          </b-card-group>
         </div>
-        <div class="col-6">
+        <div class="col-9">
           <p>
-            <b-btn v-b-toggle.collapseAdminCreate variant="primary">Ajouter une étape</b-btn>
+          <b-btn
+            v-b-toggle.collapseAdminCreate
+             @click="closeEditStopover"
+            variant="primary"
+            >
+            <span class="when-opened"><icon name="minus"></icon></span>
+            <span class="when-closed"><icon name="plus"></icon></span>
+            Ajouter une étape
+          </b-btn>
           </p>
 
-          <b-collapse id="collapseAdminCreate">
+          <b-collapse
+            id="collapseAdminCreate"
+            v-model="showNewStopover"
+            >
+            <new-stopover
+                      @update:stopoversList="updateStopoversList"
+                      :newStopover="newStopover"
+                      :ckeditorConfig="ckeditorConfig"
+                      :uploadOptions="uploadOptions"
+                      ></new-stopover>
           </b-collapse>
-          <new-stopover 
-            @update:stopoversList="updateStopoversList"
-            :newStopover="newStopover"
-            :ckeditorConfig="ckeditorConfig"
-            :uploadOptions="uploadOptions"
-            ></new-stopover>
-          <b-collapse id="collapseAdminEdit">
-            <edit-stopover 
-              @update:stopoversList="updateStopoversList"
-              :editStopover="editStopover"
-              :ckeditorConfig="ckeditorConfig"
-              :uploadOptions="uploadOptions"
-              ></edit-stopover>
+          <b-collapse
+            id="collapse-admin-edit"
+            v-model="showEditStopover"
+            >
+            <edit-stopover
+                      @update:stopoversList="updateStopoversList"
+                      :editStopover="editStopover"
+                      :ckeditorConfig="ckeditorConfig"
+                      :uploadOptions="uploadOptions"
+                      ></edit-stopover>
           </b-collapse>
         </div>
       </div>
@@ -84,6 +107,8 @@ export default {
         polyline: ''
       },
       editIndex: -1,
+      showNewStopover: false,
+      showEditStopover: false,
       newStopoverTitle: '',
       newStopoverDescription: '',
       ckeditorConfig: {
@@ -110,16 +135,17 @@ export default {
         this.stopovers = response.body.stopovers
       })
     },
-    editStopoverAction: function (el) {
-      this.editIndex = el.currentTarget.getAttribute('data-index')
-      console.log(this.editIndex)
+    editStopoverAction: function (index) {
+      this.showNewStopover = false
+      this.showEditStopover = true
 
-      this.editStopover.id = this.stopovers[this.editIndex].id
-      this.editStopover.title = this.stopovers[this.editIndex].title
-      this.editStopover.description = this.stopovers[this.editIndex].description
-      this.editStopover.startLat = this.stopovers[this.editIndex].startLat
-      this.editStopover.startLng = this.stopovers[this.editIndex].startLng
-      this.editStopover.gallery = this.stopovers[this.editIndex].gallery
+      this.editIndex = index
+      this.editStopover.id = this.stopovers[index].id
+      this.editStopover.title = this.stopovers[index].title
+      this.editStopover.description = this.stopovers[index].description
+      this.editStopover.startLat = this.stopovers[index].startLat
+      this.editStopover.startLng = this.stopovers[index].startLng
+      this.editStopover.gallery = this.stopovers[index].gallery
     },
     deleteStopoverAction: function (index) {
       var id = this.stopovers[index].id
@@ -152,6 +178,9 @@ export default {
             this.stopovers = response.body
           }
         )
+    },
+    closeEditStopover: function () {
+      this.showEditStopover = false
     }
   },
   components: {
@@ -161,25 +190,33 @@ export default {
     editStopover
   }
 }
-  </script>
+</script>
 
-  <!-- Add "scoped" attribute to limit CSS to this component only -->
-  <style scoped>
-  h1, h2 {
-    font-weight: normal;
-  }
-
-  ul {
-    list-style-type: none;
-    padding: 0;
-  }
-
-  li {
-    display: inline-block;
-    margin: 0 10px;
-  }
-
-  a {
-    color: #42b983;
-  }
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style>
+#admin {
+  height: 100%;
+  margin: 0px;
+}
+.stopover-item {
+  text-align: left;
+  padding: 1rem;
+}
+.stopovers {
+  overflow-y: scroll;
+}
+#create-stopover, #edit-stopover {
+  padding: 1rem;
+  border: solid #f7f7f9;
+}
+.collapsed > .when-opened,
+:not(.collapsed) > .when-closed {
+  display: none;
+}
+.gallery-upload {
+  border: solid #f7f7f9;
+  text-align: center;
+  padding-top: 1rem;
+  margin-bottom: 1rem;
+}
 </style>

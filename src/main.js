@@ -32,6 +32,11 @@ Vue.use(BootstrapVue)
 import VueClip from 'vue-clip'
 Vue.use(VueClip)
 
+// Font awesome icon library
+import 'vue-awesome/icons'
+import Icon from 'vue-awesome/components/Icon'
+Vue.component('icon', Icon)
+
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
